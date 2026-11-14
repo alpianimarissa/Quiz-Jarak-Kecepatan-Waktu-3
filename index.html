@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Jarak, Kecepatan & Waktu (Paket B - 25 Soal) - Kelas 6 SD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, .font-heading {
+            font-family: 'Fredoka', sans-serif;
+        }
+        /* Custom scrollbar for question palette */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.25s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-teal-50 via-cyan-50 to-sky-50 min-h-screen text-slate-800 flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-teal-100 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center space-x-3">
+                <span class="text-3xl">🧭</span>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-bold text-teal-700 leading-tight">Uji Tantangan Paket B: Jarak, Kecepatan & Waktu</h1>
+                    <p class="text-xs text-slate-500">10 Soal Umum & 15 Soal Penalaran (HOTS) • Tersimpan Otomatis</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <div id="save-indicator" class="hidden sm:flex items-center space-x-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                    <span>💾</span>
+                    <span>Progres Tersimpan</span>
+                </div>
+                <div class="bg-teal-50 border border-teal-100 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold text-teal-700">
+                    Skor: <span id="header-score">0</span> / 25
+                </div>
+                <button onclick="openResetModal()" class="text-xs font-semibold text-rose-600 hover:bg-rose-50 px-3 py-1.5 rounded-xl border border-rose-200 transition-colors" title="Ulangi Kuis dari Awal">
+                    🔄 Reset
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="max-w-6xl mx-auto w-full px-4 py-6 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- Left / Top: Question Area (8 cols on lg) -->
+        <div class="lg:col-span-8 space-y-4">
+            
+            <!-- Progress Bar -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-teal-50">
+                <div class="flex justify-between text-xs font-semibold text-slate-500 mb-1.5">
+                    <span>Progres Pengerjaan: <span id="progress-count" class="text-teal-600">0</span> dari 25 Soal</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                    <div id="progress-bar" class="bg-gradient-to-r from-teal-500 to-cyan-500 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Active Question Card -->
+            <div id="question-card" class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-teal-50 animate-fade-in">
+                <!-- Badge & Question Number -->
+                <div class="flex flex-wrap justify-between items-center gap-2 mb-4 pb-3 border-b border-slate-100">
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-teal-600 text-white font-heading font-bold text-sm px-3.5 py-1 rounded-xl">
+                            Soal <span id="q-num">1</span> / 25
+                        </span>
+                        <span id="q-category" class="text-xs font-bold px-3 py-1 rounded-xl bg-sky-100 text-sky-700">
+                            Konsep Umum
+                        </span>
+                    </div>
+                    <button onclick="toggleHint()" id="btn-hint" class="text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-3 py-1 rounded-full transition-colors">
+                        💡 Petunjuk
+                    </button>
+                </div>
+
+                <!-- Hint Box -->
+                <div id="q-hint-box" class="hidden mb-4 bg-amber-50 border border-amber-200 text-amber-900 p-3.5 rounded-2xl text-xs sm:text-sm">
+                    <span class="font-bold">💡 Petunjuk:</span> <span id="q-hint-text"></span>
+                </div>
+
+                <!-- Question Text -->
+                <div id="q-text" class="text-slate-800 font-medium text-base sm:text-lg leading-relaxed mb-6">
+                    <!-- Injected via JS -->
+                </div>
+
+                <!-- Options Container -->
+                <div id="q-options" class="space-y-3">
+                    <!-- Injected via JS -->
+                </div>
+
+                <!-- Immediate Feedback & Explanation Box -->
+                <div id="q-feedback" class="hidden mt-6 p-4 sm:p-5 rounded-2xl border text-sm leading-relaxed animate-fade-in">
+                    <div class="flex items-center space-x-2 font-bold text-base mb-1.5" id="feedback-title">
+                        <!-- Injected via JS -->
+                    </div>
+                    <div id="feedback-explanation" class="text-slate-700 space-y-1">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Bottom Navigation Buttons -->
+                <div class="flex justify-between items-center mt-8 pt-4 border-t border-slate-100">
+                    <button id="btn-prev" onclick="prevQuestion()" class="flex items-center space-x-1.5 px-4 py-2.5 rounded-xl font-semibold text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-40 disabled:pointer-events-none transition-colors">
+                        <span>←</span>
+                        <span>Sebelumnya</span>
+                    </button>
+
+                    <button id="btn-finish" onclick="showSummaryModal()" class="hidden px-5 py-2.5 rounded-xl font-bold text-sm bg-emerald-600 text-white hover:bg-emerald-700 shadow-md transition-all">
+                        🏆 Lihat Hasil Akhir
+                    </button>
+
+                    <button id="btn-next" onclick="nextQuestion()" class="flex items-center space-x-1.5 px-5 py-2.5 rounded-xl font-semibold text-sm bg-teal-600 text-white hover:bg-teal-700 shadow-sm disabled:opacity-40 disabled:pointer-events-none transition-colors">
+                        <span>Selanjutnya</span>
+                        <span>→</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right / Bottom: Navigation Grid (4 cols on lg) -->
+        <aside class="lg:col-span-4 bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-teal-50 space-y-5 sticky top-20">
+            <div>
+                <h2 class="font-bold text-slate-800 text-base sm:text-lg">🧭 Navigasi Nomor Soal</h2>
+                <p class="text-xs text-slate-500">Klik nomor untuk berpindah soal dengan cepat.</p>
+            </div>
+
+            <!-- Category Legend -->
+            <div class="space-y-3">
+                <div>
+                    <p class="text-xs font-bold text-sky-700 uppercase tracking-wider mb-2">Bagian 1: Soal Umum (1 - 10)</p>
+                    <div id="nav-grid-umum" class="grid grid-cols-5 gap-2">
+                        <!-- Buttons 1-10 -->
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <p class="text-xs font-bold text-rose-700 uppercase tracking-wider mb-2">Bagian 2: Penalaran / HOTS (11 - 25)</p>
+                    <div id="nav-grid-hots" class="grid grid-cols-5 gap-2">
+                        <!-- Buttons 11-25 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Legend -->
+            <div class="pt-4 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs text-slate-600">
+                <div class="flex items-center space-x-2">
+                    <span class="w-4 h-4 rounded-md bg-emerald-500 inline-block"></span>
+                    <span>Benar (<span id="count-correct">0</span>)</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-4 h-4 rounded-md bg-rose-500 inline-block"></span>
+                    <span>Salah (<span id="count-wrong">0</span>)</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-4 h-4 rounded-md bg-slate-100 border border-slate-300 inline-block"></span>
+                    <span>Belum Dijawab (<span id="count-unanswered">25</span>)</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-4 h-4 rounded-md ring-2 ring-teal-600 bg-white inline-block"></span>
+                    <span>Aktif</span>
+                </div>
+            </div>
+
+            <button onclick="showSummaryModal()" class="w-full py-2.5 rounded-xl font-bold text-sm bg-teal-50 text-teal-700 hover:bg-teal-100 border border-teal-200 transition-colors">
+                📊 Ringkasan & Nilai Akhir
+            </button>
+        </aside>
+
+    </main>
+
+    <!-- Summary Modal -->
+    <div id="summary-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl text-center space-y-5 animate-fade-in">
+            <div id="summary-emoji" class="text-6xl">🏆</div>
+            <div>
+                <h3 class="text-2xl font-bold text-slate-800">Hasil Kuis JKW (Paket B)</h3>
+                <p id="summary-subtitle" class="text-slate-500 text-sm mt-1">Evaluasi kemampuanmu pada soal umum dan HOTS.</p>
+            </div>
+
+            <div class="bg-teal-50/70 rounded-2xl p-4 border border-teal-100">
+                <div class="text-4xl font-heading font-bold text-teal-600" id="summary-final-score">0</div>
+                <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">Nilai Akhir (Skala 100)</div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 text-left text-xs sm:text-sm">
+                <div class="bg-sky-50 p-3 rounded-xl border border-sky-100">
+                    <p class="text-sky-800 font-bold">Soal Umum (1-10)</p>
+                    <p class="text-slate-700 mt-0.5">Benar: <span id="sum-umum-correct" class="font-bold">0</span> / 10</p>
+                </div>
+                <div class="bg-rose-50 p-3 rounded-xl border border-rose-100">
+                    <p class="text-rose-800 font-bold">Soal HOTS (11-25)</p>
+                    <p class="text-slate-700 mt-0.5">Benar: <span id="sum-hots-correct" class="font-bold">0</span> / 15</p>
+                </div>
+            </div>
+
+            <p id="summary-advice" class="text-xs sm:text-sm text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200"></p>
+
+            <div class="flex space-x-3 pt-2">
+                <button onclick="closeSummaryModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-sm transition-colors">
+                    Kembali ke Soal
+                </button>
+                <button onclick="confirmResetQuiz()" class="flex-1 bg-teal-600 hover:bg-teal-700 text-white font-bold py-2.5 rounded-xl text-sm shadow transition-colors">
+                    Ulangi Kuis
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reset Confirmation Modal -->
+    <div id="reset-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center space-y-4 animate-fade-in">
+            <div class="text-5xl">⚠️</div>
+            <h3 class="text-xl font-bold text-slate-800">Ulangi Kuis dari Awal?</h3>
+            <p class="text-slate-600 text-sm">Semua jawaban yang sudah kamu isi akan dihapus dan skor kembali menjadi 0.</p>
+            <div class="flex space-x-3 pt-2">
+                <button onclick="closeResetModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-sm">
+                    Batal
+                </button>
+                <button onclick="confirmResetQuiz()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl text-sm shadow">
+                    Ya, Reset
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="max-w-6xl mx-auto px-4 py-6 text-center text-slate-400 text-xs">
+        <p>© 2026 Matematika Seru Kelas 6 SD • Latihan Mandiri Jarak, Kecepatan & Waktu Paket B (Auto-Save Aktif)</p>
+    </footer>
+
+    <script>
+        // Storage Key (Unique for Package B so it doesn't collide with Package A)
+        const STORAGE_KEY = 'jkw_quiz_25_state_paket_b_v1';
+
+        // 25 Brand New Distinct Questions (10 General + 15 HOTS/Reasoning)
+        // Balanced distribution of correct answers:
+        // Index 0 (A): 6 questions (Q2, Q7, Q12, Q16, Q20, Q24)
+        // Index 1 (B): 7 questions (Q4, Q8, Q11, Q15, Q19, Q22, Q25)
+        // Index 2 (C): 6 questions (Q1, Q5, Q9, Q13, Q17, Q21)
+        // Index 3 (D): 6 questions (Q3, Q6, Q10, Q14, Q18, Q23)
+
+        const quizQuestions = [
+            // --- BAGIAN 1: 10 SOAL UMUM (KONSEP & KONVERSI DASAR) ---
+            {
+                id: 1,
+                type: "umum",
+                question: "Sebuah bus antarkota melaju dengan kecepatan tetap 84 km/jam selama 1 jam 20 menit. Jarak yang berhasil ditempuh bus tersebut adalah ....",
+                options: [
+                    "100,8 km",
+                    "105 km",
+                    "112 km",
+                    "120 km"
+                ],
+                correctIndex: 2,
+                hint: "Ubah 20 menit ke dalam pecahan jam (20/60 = 1/3 jam), sehingga 1 jam 20 menit = 1 1/3 jam = 4/3 jam.",
+                explanation: "1 jam 20 menit = 1 + (20/60) jam = 1 ⅓ jam = 4/3 jam.<br>Jarak = Kecepatan × Waktu = 84 km/jam × (4/3) jam = 28 × 4 = <strong>112 km</strong>."
+            },
+            {
+                id: 2,
+                type: "umum",
+                question: "Durasi waktu 3 jam 48 menit jika dinyatakan ke dalam bentuk desimal jam adalah ....",
+                options: [
+                    "3,80 jam",
+                    "3,48 jam",
+                    "3,75 jam",
+                    "3,85 jam"
+                ],
+                correctIndex: 0,
+                hint: "Bagilah 48 menit dengan 60 untuk mendapatkan nilai desimal jamnya.",
+                explanation: "48 menit = 48 ÷ 60 = 0,8 jam.<br>Jadi 3 jam 48 menit = 3 + 0,8 = <strong>3,80 jam</strong> (atau 3,8 jam)."
+            },
+            {
+                id: 3,
+                type: "umum",
+                question: "Jarak antara Dermaga Sanur dan Nusa Penida sekitar 18 km. Jika sebuah perahu cepat (speedboat) menempuhnya dalam waktu 30 menit, kecepatan rata-rata speedboat tersebut adalah ....",
+                options: [
+                    "9 km/jam",
+                    "24 km/jam",
+                    "30 km/jam",
+                    "36 km/jam"
+                ],
+                correctIndex: 3,
+                hint: "30 menit sama dengan 0,5 jam (½ jam). Gunakan rumus Kecepatan = Jarak ÷ Waktu.",
+                explanation: "Waktu = 30 menit = 0,5 jam.<br>Kecepatan = 18 km ÷ 0,5 jam = <strong>36 km/jam</strong>."
+            },
+            {
+                id: 4,
+                type: "umum",
+                question: "Bima berlari pagi sejauh 3.600 meter dalam waktu 12 menit. Kecepatan lari Bima jika dinyatakan dalam satuan km/jam adalah ....",
+                options: [
+                    "15 km/jam",
+                    "18 km/jam",
+                    "20 km/jam",
+                    "30 km/jam"
+                ],
+                correctIndex: 1,
+                hint: "Ubah 3.600 meter menjadi kilometer (3,6 km) dan 12 menit menjadi pecahan jam (12/60 = 1/5 jam).",
+                explanation: "Jarak = 3.600 m = 3,6 km.<br>Waktu = 12 menit = 12/60 jam = 1/5 jam (0,2 jam).<br>Kecepatan = 3,6 km ÷ 0,2 jam = <strong>18 km/jam</strong>."
+            },
+            {
+                id: 5,
+                type: "umum",
+                question: "Sebuah kereta cepat melaju dengan kecepatan 150 km/jam. Waktu yang diperlukan kereta tersebut untuk menempuh jarak 330 km adalah ....",
+                options: [
+                    "2 jam 20 menit",
+                    "2 jam 15 menit",
+                    "2 jam 12 menit",
+                    "2 jam 30 menit"
+                ],
+                correctIndex: 2,
+                hint: "Bagi 330 dengan 150 untuk memperoleh jam desimal (2,2 jam), lalu kalikan angka di belakang koma (0,2) dengan 60 menit.",
+                explanation: "Waktu = 330 ÷ 150 = 2,2 jam.<br>0,2 jam = 0,2 × 60 menit = 12 menit.<br>Jadi waktu tempuhnya adalah <strong>2 jam 12 menit</strong>."
+            },
+            {
+                id: 6,
+                type: "umum",
+                question: "Ibu mengendarai sepeda motor dengan kecepatan 40 km/jam selama 36 menit untuk pergi ke pasar induk. Jarak yang ditempuh Ibu adalah ....",
+                options: [
+                    "14,4 km",
+                    "18 km",
+                    "20 km",
+                    "24 km"
+                ],
+                correctIndex: 3,
+                hint: "Ubah 36 menit menjadi pecahan jam (36/60 = 0,6 jam) lalu kalikan dengan kecepatan 40 km/jam.",
+                explanation: "Waktu = 36 menit = 36/60 jam = 0,6 jam.<br>Jarak = 40 km/jam × 0,6 jam = <strong>24 km</strong>."
+            },
+            {
+                id: 7,
+                type: "umum",
+                question: "Waktu tempuh selama 1,35 jam jika diubah ke dalam satuan menit adalah ....",
+                options: [
+                    "81 menit",
+                    "135 menit",
+                    "95 menit",
+                    "75 menit"
+                ],
+                correctIndex: 0,
+                hint: "Kalikan 1,35 dengan 60 untuk mendapatkan jumlah menit keseluruhan.",
+                explanation: "1,35 jam = 1,35 × 60 menit = <strong>81 menit</strong> (atau 1 jam 21 menit)."
+            },
+            {
+                id: 8,
+                type: "umum",
+                question: "Seekor burung elang terbang menukik dengan kecepatan 25 meter/detik. Jarak yang ditempuh elang tersebut selama 1,5 menit adalah ....",
+                options: [
+                    "37,5 meter",
+                    "2.250 meter",
+                    "1.500 meter",
+                    "2.500 meter"
+                ],
+                correctIndex: 1,
+                hint: "Ubah 1,5 menit ke dalam satuan detik terlebih dahulu (1,5 × 60 detik).",
+                explanation: "1,5 menit = 1,5 × 60 detik = 90 detik.<br>Jarak = 25 meter/detik × 90 detik = <strong>2.250 meter</strong>."
+            },
+            {
+                id: 9,
+                type: "umum",
+                question: "Kakak berangkat dari rumah pukul 07.15 menuju kampus yang berjarak 27 km. Jika kecepatan motor Kakak 36 km/jam, Kakak akan tiba di kampus pada pukul ....",
+                options: [
+                    "07.45",
+                    "07.50",
+                    "08.00",
+                    "08.15"
+                ],
+                correctIndex: 2,
+                hint: "Hitung waktu tempuh (27 ÷ 36 = 3/4 jam), ubah ke menit, lalu tambahkan ke jam berangkat 07.15.",
+                explanation: "Waktu = 27 ÷ 36 = 3/4 jam = 0,75 jam.<br>0,75 × 60 menit = 45 menit.<br>Waktu tiba = 07.15 + 45 menit = <strong>08.00</strong>."
+            },
+            {
+                id: 10,
+                type: "umum",
+                question: "Sebuah sepeda motor melaju dengan kecepatan 72 km/jam. Kecepatan tersebut jika dinyatakan dalam satuan meter/detik adalah ....",
+                options: [
+                    "12 meter/detik",
+                    "15 meter/detik",
+                    "18 meter/detik",
+                    "20 meter/detik"
+                ],
+                correctIndex: 3,
+                hint: "Ubah 72 km menjadi meter (72.000 m) dan 1 jam menjadi detik (3.600 detik), lalu bagilah keduanya.",
+                explanation: "72 km/jam = 72.000 meter ÷ 3.600 detik = <strong>20 meter/detik</strong>."
+            },
+
+            // --- BAGIAN 2: 15 SOAL PENALARAN / HOTS ---
+            {
+                id: 11,
+                type: "hots",
+                question: "Sebuah truk barang berangkat dari Kota A ke Kota B sejauh 180 km dengan kecepatan 45 km/jam. Saat kembali dari Kota B ke Kota A tanpa muatan, truk melaju dengan kecepatan 60 km/jam. Kecepatan rata-rata truk untuk seluruh perjalanan pulang-pergi adalah ....",
+                options: [
+                    "50 km/jam",
+                    "51,4 km/jam",
+                    "52,5 km/jam",
+                    "55 km/jam"
+                ],
+                correctIndex: 1,
+                hint: "Gunakan rumus: Total Jarak Pergi-Pulang (360 km) ÷ Total Waktu Pergi-Pulang.",
+                explanation: "Jarak total pulang-pergi = 180 + 180 = 360 km.<br>Waktu berangkat = 180 ÷ 45 = 4 jam.<br>Waktu kembali = 180 ÷ 60 = 3 jam.<br>Total waktu = 4 + 3 = 7 jam.<br>Kecepatan rata-rata = 360 ÷ 7 = 51,428... ≈ <strong>51,4 km/jam</strong>."
+            },
+            {
+                id: 12,
+                type: "hots",
+                question: "Lani berangkat dari rumah pukul 06.10 mengendarai sepeda dengan kecepatan 15 km/jam dan sampai di tempat les pukul 06.50. Minggu depan, Lani baru berangkat pukul 06.20. Agar tetap tiba pukul 06.50, kecepatan bersepeda Lani harus menjadi ....",
+                options: [
+                    "20 km/jam",
+                    "18 km/jam",
+                    "22 km/jam",
+                    "25 km/jam"
+                ],
+                correctIndex: 0,
+                hint: "Cari dulu jarak rumah Lani ke tempat les dari perjalanan pertama (durasi 40 menit = 2/3 jam), lalu bagi dengan durasi baru (30 menit = 0,5 jam).",
+                explanation: "Hari 1: Waktu = 06.50 - 06.10 = 40 menit = 2/3 jam.<br>Jarak = 15 km/jam × (2/3) jam = 10 km.<br>Hari 2: Waktu baru = 06.50 - 06.20 = 30 menit = 0,5 jam.<br>Kecepatan baru = 10 km ÷ 0,5 jam = <strong>20 km/jam</strong>."
+            },
+            {
+                id: 13,
+                type: "hots",
+                question: "Jarak Kota Bandung dan Cirebon adalah 130 km. Mobil P berangkat dari Bandung pukul 08.00 dengan kecepatan 50 km/jam. Pada pukul 08.24, Mobil Q berangkat dari Cirebon menuju Bandung dengan kecepatan 60 km/jam. Pukul berapa kedua mobil akan berpapasan?",
+                options: [
+                    "09.12",
+                    "09.18",
+                    "09.24",
+                    "09.30"
+                ],
+                correctIndex: 2,
+                hint: "Mobil P jalan 24 menit (24/60 = 0,4 jam) lebih dulu. Hitung jarak awal Mobil P, kurangkan dari 130 km, lalu bagi dengan jumlah kecepatan.",
+                explanation: "Selisih waktu = 24 menit = 24/60 = 0,4 jam.<br>Jarak awal Mobil P = 50 × 0,4 = 20 km.<br>Sisa jarak saat 08.24 = 130 - 20 = 110 km.<br>Waktu papasan = 110 ÷ (50 + 60) = 110 ÷ 110 = 1 jam.<br>Waktu berpapasan = 08.24 + 1 jam = <strong>09.24</strong>."
+            },
+            {
+                id: 14,
+                type: "hots",
+                question: "Sebuah mobil boks berangkat dari gudang pukul 09.00 dengan kecepatan 40 km/jam. Pada pukul 09.45, sebuah mobil kurir ekspres menyusul dari gudang yang sama dengan kecepatan 65 km/jam. Pukul berapa mobil kurir tepat menyusul mobil boks?",
+                options: [
+                    "10.45",
+                    "10.50",
+                    "10.55",
+                    "10.57"
+                ],
+                correctIndex: 3,
+                hint: "Selisih waktu 45 menit = 0,75 jam. Cari jarak awal mobil boks (40 × 0,75), lalu bagi dengan selisih kecepatan (65 - 40).",
+                explanation: "Selisih waktu = 45 menit = 0,75 jam.<br>Selisih jarak awal = 40 × 0,75 = 30 km.<br>Selisih kecepatan = 65 - 40 = 25 km/jam.<br>Waktu susul = 30 ÷ 25 = 1,2 jam = 1 jam 12 menit.<br>Waktu menyusul = 09.45 + 1 jam 12 menit = <strong>10.57</strong>."
+            },
+            {
+                id: 15,
+                type: "hots",
+                question: "Rombongan wisata menempuh perjalanan sejauh 270 km. Mereka berangkat pukul 06.30 dengan kecepatan rata-rata 60 km/jam. Di tengah perjalanan, mereka berhenti dua kali untuk beristirahat masing-masing selama 20 menit dan 25 menit. Pukul berapa rombongan tersebut tiba di tempat wisata?",
+                options: [
+                    "11.30",
+                    "11.45",
+                    "11.00",
+                    "12.00"
+                ],
+                correctIndex: 1,
+                hint: "Jumlahkan kedua waktu istirahat (20 + 25 = 45 menit), lalu tambahkan dengan waktu berkendara murni.",
+                explanation: "Waktu berkendara = 270 ÷ 60 = 4,5 jam = 4 jam 30 menit.<br>Total istirahat = 20 + 25 = 45 menit.<br>Total waktu = 4 jam 30 menit + 45 menit = 5 jam 15 menit.<br>Waktu tiba = 06.30 + 5 jam 15 menit = <strong>11.45</strong>."
+            },
+            {
+                id: 16,
+                type: "hots",
+                question: "Galih mengikuti lomba triatlon mini. Ia berenang dengan kecepatan 3 km/jam selama 20 menit, lalu bersepeda dengan kecepatan 24 km/jam selama 35 menit, dan terakhir berlari sejauh 4 km. Total jarak seluruh perlombaan yang ditempuh Galih adalah ....",
+                options: [
+                    "19 km",
+                    "17 km",
+                    "18 km",
+                    "21 km"
+                ],
+                correctIndex: 0,
+                hint: "Hitung jarak renang (20/60 jam × 3) dan jarak sepeda (35/60 jam × 24), lalu jumlahkan dengan 4 km.",
+                explanation: "Jarak renang = (20/60) × 3 = (1/3) × 3 = 1 km.<br>Jarak sepeda = (35/60) × 24 = (7/12) × 24 = 14 km.<br>Jarak lari = 4 km.<br>Total jarak = 1 + 14 + 4 = <strong>19 km</strong>."
+            },
+            {
+                id: 17,
+                type: "hots",
+                question: "Jarak Kota X dan Kota Y adalah 240 km. Kereta Api Kilat berangkat dari X ke Y dengan kecepatan 85 km/jam. Pada saat yang bersamaan, Kereta Api Ekspres berangkat dari Y ke X dengan kecepatan 75 km/jam. Saat kedua kereta berpapasan, berapa selisih jarak yang ditempuh keduanya?",
+                options: [
+                    "10 km",
+                    "12 km",
+                    "15 km",
+                    "20 km"
+                ],
+                correctIndex: 2,
+                hint: "Cari waktu papasan = 240 ÷ (85 + 75), lalu kalikan dengan selisih kecepatan (85 - 75).",
+                explanation: "Waktu papasan = 240 ÷ (85 + 75) = 240 ÷ 160 = 1,5 jam.<br>Jarak Kereta Kilat = 85 × 1,5 = 127,5 km.<br>Jarak Kereta Ekspres = 75 × 1,5 = 112,5 km.<br>Selisih jarak = 127,5 - 112,5 = <strong>15 km</strong>."
+            },
+            {
+                id: 18,
+                type: "hots",
+                question: "Sebuah kereta penumpang sepanjang 150 meter melaju dengan kecepatan 72 km/jam. Kereta tersebut akan melintasi sebuah jembatan yang panjangnya 250 meter. Berapa detik waktu yang dibutuhkan mulai dari kepala kereta masuk jembatan hingga gerbong paling belakang keluar dari jembatan?",
+                options: [
+                    "12,5 detik",
+                    "15 detik",
+                    "18 detik",
+                    "20 detik"
+                ],
+                correctIndex: 3,
+                hint: "Total jarak yang harus ditempuh kereta adalah Panjang Kereta + Panjang Jembatan (150 m + 250 m = 400 m). Ubah 72 km/jam ke meter/detik.",
+                explanation: "Total jarak = 150 m + 250 m = 400 meter.<br>Kecepatan = 72 km/jam = 72.000 m ÷ 3.600 detik = 20 meter/detik.<br>Waktu melintas = 400 m ÷ 20 m/detik = <strong>20 detik</strong>."
+            },
+            {
+                id: 19,
+                type: "hots",
+                question: "Tia dan Nia akan pergi ke taman kota yang berjarak 18 km dari rumah mereka. Tia berangkat pukul 07.00 dengan kecepatan 12 km/jam. Jika Nia bersepeda dengan kecepatan 18 km/jam dan ingin tiba di taman kota 10 menit lebih awal dari Tia, pukul berapa Nia harus berangkat?",
+                options: [
+                    "07.30",
+                    "07.20",
+                    "07.15",
+                    "07.25"
+                ],
+                correctIndex: 1,
+                hint: "Cari jam tiba Tia terlebih dahulu, kurangi 10 menit untuk mendapatkan target jam tiba Nia, lalu kurangi dengan waktu tempuh Nia.",
+                explanation: "Waktu Tia = 18 ÷ 12 = 1,5 jam (1 jam 30 menit) → Tia tiba pukul 08.30.<br>Target tiba Nia (10 menit lebih awal) = pukul 08.20.<br>Waktu tempuh Nia = 18 ÷ 18 = 1 jam.<br>Nia harus berangkat pukul 08.20 - 1 jam = <strong>07.20</strong>."
+            },
+            {
+                id: 20,
+                type: "hots",
+                question: "Sebuah mobil menempuh perjalanan sejauh 250 km. Pada 1 jam 30 menit pertama, mobil melaju dengan kecepatan 60 km/jam. Karena memasuki jalan tol, sisa perjalanan ditempuh dengan kecepatan 80 km/jam. Berapa total waktu yang dibutuhkan untuk seluruh perjalanan tersebut?",
+                options: [
+                    "3 jam 30 menit",
+                    "3 jam 15 menit",
+                    "3 jam 45 menit",
+                    "4 jam 00 menit"
+                ],
+                correctIndex: 0,
+                hint: "Hitung jarak pada 1,5 jam pertama, kurangkan dari 250 km untuk mendapat sisa jarak, lalu bagi sisa jarak dengan 80 km/jam.",
+                explanation: "Jarak tahap 1 = 60 km/jam × 1,5 jam = 90 km.<br>Sisa jarak = 250 - 90 = 160 km.<br>Waktu tahap 2 = 160 ÷ 80 = 2 jam.<br>Total waktu = 1 jam 30 menit + 2 jam = <strong>3 jam 30 menit</strong>."
+            },
+            {
+                id: 21,
+                type: "hots",
+                question: "Perbandingan kecepatan sepeda motor dan mobil adalah 4 : 7. Untuk menempuh suatu perjalanan, waktu tempuh sepeda motor lebih lama 45 menit dibandingkan mobil. Berapa waktu yang dibutuhkan mobil untuk menempuh perjalanan tersebut?",
+                options: [
+                    "45 menit",
+                    "50 menit",
+                    "60 menit",
+                    "75 menit"
+                ],
+                correctIndex: 2,
+                hint: "Perbandingan waktu motor : mobil adalah kebalikan dari 4 : 7, yaitu 7 : 4. Selisih perbandingannya adalah 7 - 4 = 3 bagian yang bernilai 45 menit.",
+                explanation: "Perbandingan kecepatan motor : mobil = 4 : 7, maka perbandingan waktu motor : mobil = 7 : 4.<br>Selisih perbandingan waktu = 7 - 4 = 3 bagian = 45 menit → 1 bagian = 15 menit.<br>Waktu mobil = 4 bagian × 15 menit = <strong>60 menit</strong>."
+            },
+            {
+                id: 22,
+                type: "hots",
+                question: "Dua atlet sepeda, Gilang dan Haris, berlatih di lintasan melingkar dengan keliling 600 meter dari garis start yang sama dan arah yang SAMA. Kecepatan Gilang 12 meter/detik dan Haris 9 meter/detik. Setelah berapa detik Gilang akan menyalip (mendahului satu putaran penuh) Haris untuk pertama kalinya?",
+                options: [
+                    "100 detik",
+                    "200 detik",
+                    "150 detik",
+                    "300 detik"
+                ],
+                correctIndex: 1,
+                hint: "Jika bergerak searah di lintasan melingkar, atlet yang lebih cepat akan menyalip saat selisih jarak keduanya mencapai 1 keliling lingkaran (600 m).",
+                explanation: "Karena bergerak searah, selisih kecepatan = 12 - 9 = 3 meter/detik.<br>Gilang menyalip Haris saat selisih jarak mereka genap 1 putaran (600 m).<br>Waktu menyalip = 600 m ÷ 3 m/detik = <strong>200 detik</strong>."
+            },
+            {
+                id: 23,
+                type: "hots",
+                question: "Paman mengendarai mobil dari Kota R ke Kota S dengan kecepatan 54 km/jam. Setelah menempuh perjalanan selama 1 jam 40 menit, Paman baru menyelesaikan 3/5 dari total jarak perjalanan. Sisa jarak yang masih harus ditempuh Paman adalah ....",
+                options: [
+                    "90 km",
+                    "75 km",
+                    "45 km",
+                    "60 km"
+                ],
+                correctIndex: 3,
+                hint: "Cari jarak yang sudah ditempuh (1 2/3 jam × 54 km/jam = 90 km). Karena 90 km adalah 3/5 bagian, maka sisanya adalah 2/5 bagian.",
+                explanation: "Waktu = 1 jam 40 menit = 1 ⅔ jam = 5/3 jam.<br>Jarak sudah ditempuh = 54 × (5/3) = 90 km.<br>3/5 bagian = 90 km → 1/5 bagian = 30 km.<br>Sisa perjalanan = 2/5 bagian = 2 × 30 km = <strong>60 km</strong>."
+            },
+            {
+                id: 24,
+                type: "hots",
+                question: "Sebuah kereta komuter memiliki kecepatan laju normal 60 km/jam jika tidak berhenti di stasiun. Namun karena berhenti di beberapa stasiun antara, kecepatan rata-ratanya menjadi 48 km/jam. Dalam waktu 2 jam perjalanan, berapa menit total kereta tersebut berhenti di stasiun?",
+                options: [
+                    "24 menit",
+                    "12 menit",
+                    "18 menit",
+                    "30 menit"
+                ],
+                correctIndex: 0,
+                hint: "Dalam 2 jam, kereta hanya menempuh 48 × 2 = 96 km (padahal normalnya 60 × 2 = 120 km). Hitung waktu untuk menempuh selisih jarak 24 km dengan kecepatan 60 km/jam.",
+                explanation: "Jarak normal 2 jam = 60 × 2 = 120 km.<br>Jarak aktual 2 jam = 48 × 2 = 96 km.<br>Selisih jarak = 120 - 96 = 24 km.<br>Waktu berhenti = 24 km ÷ 60 km/jam = 0,4 jam = 0,4 × 60 menit = <strong>24 menit</strong>."
+            },
+            {
+                id: 25,
+                type: "hots",
+                question: "Jarak Kota Cendana ke Kota Mahoni adalah 140 km. Pak Danu berangkat dari Kota Cendana pukul 07.00 dengan kecepatan 40 km/jam. Pukul 07.30, Pak Eko berangkat dari Kota Mahoni menuju Kota Cendana dengan kecepatan 40 km/jam. Berapa kilometer jarak dari Kota Mahoni saat mereka berpapasan?",
+                options: [
+                    "80 km",
+                    "60 km",
+                    "70 km",
+                    "50 km"
+                ],
+                correctIndex: 1,
+                hint: "Hati-hati dengan pertanyaannya: yang ditanya adalah jarak dari Kota Mahoni (tempat asal Pak Eko)! Hitung jarak yang ditempuh Pak Eko sejak pukul 07.30.",
+                explanation: "07.00 - 07.30 (0,5 jam): Pak Danu sudah menempuh 40 × 0,5 = 20 km.<br>Sisa jarak = 140 - 20 = 120 km.<br>Waktu papasan setelah 07.30 = 120 ÷ (40 + 40) = 120 ÷ 80 = 1,5 jam.<br>Jarak yang ditempuh Pak Eko dari Kota Mahoni = 40 km/jam × 1,5 jam = <strong>60 km</strong>."
+            }
+        ];
+
+        // Application State
+        let state = {
+            currentIndex: 0,
+            answers: {} // { questionId: selectedOptionIndex }
+        };
+
+        // Load state from localStorage
+        function loadState() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && typeof parsed === 'object') {
+                        state.currentIndex = typeof parsed.currentIndex === 'number' ? parsed.currentIndex : 0;
+                        state.answers = parsed.answers || {};
+                    }
+                }
+            } catch (e) {
+                console.warn("Gagal memuat penyimpanan lokal:", e);
+            }
+        }
+
+        // Save state to localStorage
+        function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                const indicator = document.getElementById('save-indicator');
+                if (indicator) {
+                    indicator.classList.add('scale-105');
+                    setTimeout(() => indicator.classList.remove('scale-105'), 200);
+                }
+            } catch (e) {
+                console.warn("Gagal menyimpan ke penyimpanan lokal:", e);
+            }
+        }
+
+        // Calculate Stats
+        function getStats() {
+            let correctCount = 0;
+            let wrongCount = 0;
+            let umumCorrect = 0;
+            let hotsCorrect = 0;
+
+            quizQuestions.forEach(q => {
+                const ans = state.answers[q.id];
+                if (ans !== undefined) {
+                    if (ans === q.correctIndex) {
+                        correctCount++;
+                        if (q.type === 'umum') umumCorrect++;
+                        else hotsCorrect++;
+                    } else {
+                        wrongCount++;
+                    }
+                }
+            });
+
+            const answeredCount = correctCount + wrongCount;
+            const unansweredCount = quizQuestions.length - answeredCount;
+
+            return {
+                correctCount,
+                wrongCount,
+                answeredCount,
+                unansweredCount,
+                umumCorrect,
+                hotsCorrect
+            };
+        }
+
+        // Render Navigation Palette
+        function renderNavigation() {
+            const umumGrid = document.getElementById('nav-grid-umum');
+            const hotsGrid = document.getElementById('nav-grid-hots');
+            umumGrid.innerHTML = '';
+            hotsGrid.innerHTML = '';
+
+            quizQuestions.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                btn.innerText = q.id;
+                btn.onclick = () => goToQuestion(idx);
+
+                const userAns = state.answers[q.id];
+                const isActive = idx === state.currentIndex;
+
+                let baseClasses = "h-9 w-full rounded-xl font-bold text-xs sm:text-sm transition-all flex items-center justify-center ";
+
+                if (userAns !== undefined) {
+                    if (userAns === q.correctIndex) {
+                        baseClasses += "bg-emerald-500 text-white shadow-sm ";
+                    } else {
+                        baseClasses += "bg-rose-500 text-white shadow-sm ";
+                    }
+                } else {
+                    baseClasses += "bg-slate-100 text-slate-700 hover:bg-teal-100 ";
+                }
+
+                if (isActive) {
+                    baseClasses += "ring-2 ring-offset-2 ring-teal-600 scale-105 ";
+                }
+
+                btn.className = baseClasses;
+
+                if (q.type === 'umum') {
+                    umumGrid.appendChild(btn);
+                } else {
+                    hotsGrid.appendChild(btn);
+                }
+            });
+        }
+
+        // Update Progress & Score Displays
+        function updateDashboard() {
+            const stats = getStats();
+            const percent = Math.round((stats.answeredCount / quizQuestions.length) * 100);
+
+            document.getElementById('header-score').innerText = stats.correctCount;
+            document.getElementById('progress-count').innerText = stats.answeredCount;
+            document.getElementById('progress-percent').innerText = percent + '%';
+            document.getElementById('progress-bar').style.width = percent + '%';
+
+            document.getElementById('count-correct').innerText = stats.correctCount;
+            document.getElementById('count-wrong').innerText = stats.wrongCount;
+            document.getElementById('count-unanswered').innerText = stats.unansweredCount;
+        }
+
+        // Render Current Question
+        function renderQuestion() {
+            const q = quizQuestions[state.currentIndex];
+            const userAns = state.answers[q.id];
+            const isAnswered = userAns !== undefined;
+
+            // Update Header Info
+            document.getElementById('q-num').innerText = q.id;
+            const catBadge = document.getElementById('q-category');
+            if (q.type === 'umum') {
+                catBadge.innerText = "📘 Konsep Umum";
+                catBadge.className = "text-xs font-bold px-3 py-1 rounded-xl bg-sky-100 text-sky-700";
+            } else {
+                catBadge.innerText = "🔥 Penalaran / HOTS";
+                catBadge.className = "text-xs font-bold px-3 py-1 rounded-xl bg-rose-100 text-rose-700";
+            }
+
+            // Reset Hint visibility
+            document.getElementById('q-hint-box').classList.add('hidden');
+            document.getElementById('q-hint-text').innerText = q.hint;
+
+            // Question Text
+            document.getElementById('q-text').innerText = q.question;
+
+            // Options
+            const optionsContainer = document.getElementById('q-options');
+            optionsContainer.innerHTML = '';
+            const letters = ['A', 'B', 'C', 'D'];
+
+            q.options.forEach((optText, optIdx) => {
+                const btn = document.createElement('button');
+                btn.disabled = isAnswered;
+
+                let cardStyle = "w-full text-left p-4 rounded-2xl border-2 transition-all flex items-center justify-between gap-3 ";
+                let badgeStyle = "w-8 h-8 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 ";
+                let statusIcon = "";
+
+                if (!isAnswered) {
+                    cardStyle += "bg-white border-slate-200 hover:border-teal-400 hover:bg-teal-50/40 cursor-pointer ";
+                    badgeStyle += "bg-slate-100 text-slate-700 ";
+                } else {
+                    // Already answered
+                    if (optIdx === q.correctIndex) {
+                        cardStyle += "bg-emerald-50 border-emerald-500 text-emerald-950 font-semibold ";
+                        badgeStyle += "bg-emerald-500 text-white ";
+                        statusIcon = `<span class="text-emerald-600 font-bold text-lg">✅</span>`;
+                    } else if (optIdx === userAns && userAns !== q.correctIndex) {
+                        cardStyle += "bg-rose-50 border-rose-500 text-rose-950 ";
+                        badgeStyle += "bg-rose-500 text-white ";
+                        statusIcon = `<span class="text-rose-600 font-bold text-lg">❌</span>`;
+                    } else {
+                        cardStyle += "bg-slate-50/70 border-slate-200 text-slate-400 opacity-75 ";
+                        badgeStyle += "bg-slate-200 text-slate-500 ";
+                    }
+                }
+
+                btn.className = cardStyle;
+                btn.innerHTML = `
+                    <div class="flex items-center space-x-3.5">
+                        <span class="${badgeStyle}">${letters[optIdx]}</span>
+                        <span class="text-sm sm:text-base">${optText}</span>
+                    </div>
+                    ${statusIcon}
+                `;
+
+                if (!isAnswered) {
+                    btn.onclick = () => selectAnswer(optIdx);
+                }
+
+                optionsContainer.appendChild(btn);
+            });
+
+            // Immediate Feedback Box
+            const feedbackBox = document.getElementById('q-feedback');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackExp = document.getElementById('feedback-explanation');
+
+            if (isAnswered) {
+                feedbackBox.classList.remove('hidden');
+                if (userAns === q.correctIndex) {
+                    feedbackBox.className = "mt-6 p-4 sm:p-5 rounded-2xl border bg-emerald-50/90 border-emerald-200 text-sm leading-relaxed animate-fade-in";
+                    feedbackTitle.innerHTML = `<span class="text-xl">🎉</span> <span class="text-emerald-800">Jawaban Kamu Benar!</span>`;
+                } else {
+                    feedbackBox.className = "mt-6 p-4 sm:p-5 rounded-2xl border bg-rose-50/90 border-rose-200 text-sm leading-relaxed animate-fade-in";
+                    feedbackTitle.innerHTML = `<span class="text-xl">💡</span> <span class="text-rose-800">Kurang Tepat! Jawaban benar adalah ${letters[q.correctIndex]}.</span>`;
+                }
+                feedbackExp.innerHTML = `<p class="font-semibold text-slate-800 mt-1">Pembahasan:</p><p>${q.explanation}</p>`;
+            } else {
+                feedbackBox.classList.add('hidden');
+            }
+
+            // Prev / Next / Finish Buttons
+            document.getElementById('btn-prev').disabled = state.currentIndex === 0;
+            const isLast = state.currentIndex === quizQuestions.length - 1;
+            const btnNext = document.getElementById('btn-next');
+            const btnFinish = document.getElementById('btn-finish');
+
+            if (isLast) {
+                btnNext.classList.add('hidden');
+                btnFinish.classList.remove('hidden');
+            } else {
+                btnNext.classList.remove('hidden');
+                btnFinish.classList.add('hidden');
+            }
+
+            renderNavigation();
+            updateDashboard();
+        }
+
+        // Handle Answer Selection
+        function selectAnswer(optionIndex) {
+            const q = quizQuestions[state.currentIndex];
+            if (state.answers[q.id] !== undefined) return; // Prevent double answering
+
+            state.answers[q.id] = optionIndex;
+            saveState();
+            renderQuestion();
+        }
+
+        // Navigation Actions
+        function goToQuestion(index) {
+            if (index >= 0 && index < quizQuestions.length) {
+                state.currentIndex = index;
+                saveState();
+                renderQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (state.currentIndex > 0) {
+                goToQuestion(state.currentIndex - 1);
+            }
+        }
+
+        function nextQuestion() {
+            if (state.currentIndex < quizQuestions.length - 1) {
+                goToQuestion(state.currentIndex + 1);
+            }
+        }
+
+        function toggleHint() {
+            const box = document.getElementById('q-hint-box');
+            box.classList.toggle('hidden');
+        }
+
+        // Modals
+        function showSummaryModal() {
+            const stats = getStats();
+            const finalScore = Math.round((stats.correctCount / quizQuestions.length) * 100);
+
+            document.getElementById('summary-final-score').innerText = finalScore;
+            document.getElementById('sum-umum-correct').innerText = stats.umumCorrect;
+            document.getElementById('sum-hots-correct').innerText = stats.hotsCorrect;
+
+            const emojiEl = document.getElementById('summary-emoji');
+            const adviceEl = document.getElementById('summary-advice');
+
+            if (stats.answeredCount < quizQuestions.length) {
+                emojiEl.innerText = "📝";
+                adviceEl.innerText = `Kamu baru mengerjakan ${stats.answeredCount} dari 25 soal. Selesaikan sisa ${stats.unansweredCount} soal lagi untuk mendapatkan evaluasi lengkap!`;
+            } else if (finalScore >= 85) {
+                emojiEl.innerText = "🏆";
+                adviceEl.innerText = "Luar biasa! Kamu sudah sangat teliti dalam konversi satuan kecepatan/waktu dan mampu memecahkan variasi soal penalaran HOTS dengan sangat baik.";
+            } else if (finalScore >= 65) {
+                emojiEl.innerText = "🌟";
+                adviceEl.innerText = "Bagus sekali! Konsep dasarmu sudah kuat. Pelajari kembali pembahasan pada soal HOTS kereta melintasi jembatan dan perbandingan waktu agar nilaimu makin sempurna.";
+            } else {
+                emojiEl.innerText = "💪";
+                adviceEl.innerText = "Terus berlatih ya! Perhatikan langkah mengubah menit ke pecahan jam dan km/jam ke meter/detik, lalu baca ulang pembahasan di tiap soal.";
+            }
+
+            document.getElementById('summary-modal').classList.remove('hidden');
+        }
+
+        function closeSummaryModal() {
+            document.getElementById('summary-modal').classList.add('hidden');
+        }
+
+        function openResetModal() {
+            document.getElementById('reset-modal').classList.remove('hidden');
+        }
+
+        function closeResetModal() {
+            document.getElementById('reset-modal').classList.add('hidden');
+        }
+
+        function confirmResetQuiz() {
+            state = {
+                currentIndex: 0,
+                answers: {}
+            };
+            localStorage.removeItem(STORAGE_KEY);
+            closeResetModal();
+            closeSummaryModal();
+            renderQuestion();
+        }
+
+        // Keyboard Arrow Support
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextQuestion();
+            if (e.key === 'ArrowLeft') prevQuestion();
+        });
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            loadState();
+            renderQuestion();
+        });
+    </script>
+</body>
+</html>
